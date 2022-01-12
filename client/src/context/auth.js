@@ -20,8 +20,8 @@ function AuthProvider({children}){
     },[]);
 
     ///Função responsável para cadastrar
-    function signUp(name,email,password){
-        api.post('/register',{
+    async function signUp(name,email,password){
+        await api.post('/register',{
             name: name,
             email: email,
             password: password
@@ -35,8 +35,8 @@ function AuthProvider({children}){
     }
 
     ///Função responsável para logar
-    function signIn(email,password){
-        api.post('/login',{
+    async function signIn(email,password){
+        await api.post('/login',{
             email: email,
             password: password
         })
