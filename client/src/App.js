@@ -2,7 +2,13 @@ import React,{useState} from 'react';
 
 import './styles.css';
 
+import api from './services/api';
+
 export default function App() {
+    ///Usuario e email
+    const [myName,setMyName] = useState('');
+    const [myEmail,setMyEmail] = useState('');
+    const [isLogged,setIsLogged] = useState(false);
 
     ///Variaveis para login
     const [email,setEmail] = useState('');
@@ -13,6 +19,77 @@ export default function App() {
     const [emailRegister,setEmailRegister] = useState('');
     const [passwordRegister,setPasswordRegister] = useState('');
     const [passwordConfirm,setPasswordConfirm] = useState('');
+
+
+    function handleRegister(event){
+        event.preventDefault();
+
+        if(isLogged){
+            alert('Por favor, saia primeiro da aplicação !!');
+            return;
+        }
+
+        if(nameRegister.trim() === '' || emailRegister.trim() === '' || passwordRegister.trim() === '' || passwordConfirm.trim() === ''){
+            alert('Por favor, preencha todos os campos');
+            return;
+        }
+
+        if(passwordRegister !== passwordConfirm){
+            alert('Por favor, digite as senhas iguais !!');
+            return;
+        }
+
+        if(passwordRegister.length < 8 || passwordConfirm.length < 8){
+            alert('Por favor, coloque uma senha maior que pelo menos 8 caracteres');
+            return;
+        }
+
+        api.post('/register',{
+            name: nameRegister,
+            email: emailRegister,
+            password: passwordRegister,
+        })
+        .then((response) => {
+            console.log(response);
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+
+        setNameRegister('');
+        setEmailRegister('');
+        setPasswordRegister('');
+        setPasswordConfirm('');
+    }
+
+    function handleLogin(event){
+        event.preventDefault();
+        
+        if(email.trim() === '' || password.trim() === ''){
+            alert('Preencha todos os campos !!');
+            return;
+        }
+
+        api.post('/login',{
+            email: email,
+            password: password
+        })
+        .then((response) => {
+            console.log(response.data);
+            setMyName(response.data.nome);
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+        setIsLogged(true);
+        setEmail('');
+        setPassword('');
+    }
+
+    function handleSignOut(){
+        setIsLogged(false);
+        setMyName('');
+    }
 
  return (
    <section className='container'>
@@ -34,7 +111,7 @@ export default function App() {
                 onChange={(value) => setPassword(value.target.value)}
             />
 
-            <button>Entrar</button>
+            <button onClick={handleLogin}>Entrar</button>
         </form>
       </div>
 
@@ -71,9 +148,19 @@ export default function App() {
                 value={passwordConfirm}
                 onChange={(value) => setPasswordConfirm(value.target.value)}
             />
-            <button>Cadastrar</button>
+            <button onClick={handleRegister}>Cadastrar</button>
         </form>
       </div>
+
+      {isLogged ? (
+          <div>
+              <h3>{myName}</h3>
+              <button onClick={handleSignOut}>Sair</button>
+          </div>
+      )
+      :
+      null
+    }
    </section>
  ); 
 }
