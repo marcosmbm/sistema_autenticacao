@@ -27,7 +27,20 @@ function AuthProvider({children}){
             password: password
         })
         .then((response) => {
-            console.log(response)
+            console.log(response);
+            if(response.data.msgError){
+                alert(response.data.msgError);
+                return;
+            }
+
+            let data = {
+                nome: response.data.nome,
+                email: response.data.email,
+                msgSucess: response.data.msgSucess
+            }
+            setUser(data);
+            storageUser(data);
+            alert(data.msgSucess);
         })
         .catch((error) => {
             console.log(error);
@@ -42,14 +55,20 @@ function AuthProvider({children}){
         })
         .then((response) => {
             console.log(response.data);
+            
+            if(response.data.msgError){
+                alert(response.data.msgError);
+                return;
+            }
 
             let data = {
                 nome: response.data.nome,
-                email: response.data.email
+                email: response.data.email,
+                msgSucess: response.data.msgSucess
             }
-
             setUser(data);
             storageUser(data);
+            alert(data.msgSucess);
         })
         .catch((error) => {
             console.log(error);

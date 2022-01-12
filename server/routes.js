@@ -20,11 +20,11 @@ router.post('/register', (req,res) => {
 
     db.query(
         "SELECT * FROM usuarios WHERE email = ?",[email],
-        (err,result) => {
+        (err,response) => {
             if(err){
                 res.send(err);
             }
-            if(result.length == 0){
+            if(response.length == 0){
                 bcrypt.hash(password, saltRounds,(err,hash) =>{
                     db.query(
                         "INSERT INTO usuarios (nome,email,password) VALUES(?,?,?)",[name,email,hash],(err,result) => {
@@ -32,13 +32,17 @@ router.post('/register', (req,res) => {
                                 res.send(err);
                             }
     
-                            res.send({msg: 'Cadastrado com sucesso !!'});
+                            res.send({
+                                nome: name,
+                                email: email,
+                                msgSucess: 'Cadastrado com sucesso !!'
+                            });
                         }
                     );
                 });
             }
             else{
-                res.send({msg: 'Usuário já cadastrado !!'});
+                res.send({msgError: 'Usuário já cadastrado !!'});
             }
         });
 });
@@ -60,16 +64,16 @@ router.post('/login', (req,res) => {
                         res.send({
                                     nome: response[0].nome,
                                     email: response[0].email,
-                                    msg: "Usuário logado !!",
+                                    msgSucess: `Seja bem vindo de volta ${response[0].nome}`
                                 });
                     }
                     else{
-                        res.send({msg: "Senha incorreta !!"});
+                        res.send({msgError: "Senha incorreta !!"});
                     }
                 });  
             }
             else{
-                res.send({msg: 'Conta não encontrada !!'});
+                res.send({msgError: 'Conta não encontrada !!'});
             }
         }
     )
