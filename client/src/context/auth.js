@@ -89,6 +89,7 @@ function AuthProvider({children}){
     return(
         <AuthContext.Provider
             value={{
+                signed: !!user,
                 user,
                 signUp,
                 signIn,
