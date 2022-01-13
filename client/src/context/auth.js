@@ -1,5 +1,7 @@
 import {useState,createContext,useEffect} from 'react';
 
+import { toast } from 'react-toastify';
+
 import api from '../services/api';
 
 export const AuthContext = createContext({});
@@ -7,6 +9,7 @@ export const AuthContext = createContext({});
 function AuthProvider({children}){
     ///Meu objeto de usuario
     const [user,setUser] = useState(null);
+    const [loadingAuth,setLoadingAuth] = useState(false);
 
     useEffect(() => {
         function loadStorage(){
@@ -21,6 +24,7 @@ function AuthProvider({children}){
 
     ///Função responsável para cadastrar
     async function signUp(name,email,password){
+        setLoadingAuth(true);
         await api.post('/register',{
             name: name,
             email: email,
@@ -29,7 +33,8 @@ function AuthProvider({children}){
         .then((response) => {
             console.log(response);
             if(response.data.msgError){
-                alert(response.data.msgError);
+                toast.error(response.data.msgError);
+                setLoadingAuth(false);
                 return;
             }
 
@@ -40,7 +45,8 @@ function AuthProvider({children}){
             }
             setUser(data);
             storageUser(data);
-            alert(data.msgSucess);
+            setLoadingAuth(false);
+            toast.success(data.msgSucess);
         })
         .catch((error) => {
             console.log(error);
@@ -49,6 +55,7 @@ function AuthProvider({children}){
 
     ///Função responsável para logar
     async function signIn(email,password){
+        setLoadingAuth(true);
         await api.post('/login',{
             email: email,
             password: password
@@ -57,7 +64,8 @@ function AuthProvider({children}){
             console.log(response.data);
             
             if(response.data.msgError){
-                alert(response.data.msgError);
+                toast.error(response.data.msgError);
+                setLoadingAuth(false);
                 return;
             }
 
@@ -68,10 +76,11 @@ function AuthProvider({children}){
             }
             setUser(data);
             storageUser(data);
-            alert(data.msgSucess);
+            setLoadingAuth(false);
+            toast.success(data.msgSucess);
         })
         .catch((error) => {
-            console.log(error);
+            new Error(error);
         })
     }
 
@@ -91,6 +100,7 @@ function AuthProvider({children}){
             value={{
                 signed: !!user,
                 user,
+                loadingAuth,
                 signUp,
                 signIn,
                 signOut

@@ -2,11 +2,13 @@ import React, { useState, useContext } from 'react';
 
 import './styles.css';
 import {Link} from 'react-router-dom';
+import {MdEmail, MdLock} from 'react-icons/md';
 
 import { AuthContext } from '../../context/auth';
+import { toast } from 'react-toastify';
 
 export default function SignIn() {
-    const {signIn } = useContext(AuthContext);
+    const {signIn,loadingAuth } = useContext(AuthContext);
 
 
     ///Variaveis para login
@@ -17,7 +19,7 @@ export default function SignIn() {
         event.preventDefault();
 
         if (email.trim() === '' || password.trim() === '') {
-            alert('Preencha todos os campos !!');
+            toast.info('Preencha todos os campos !!');
             return;
         }
 
@@ -29,30 +31,36 @@ export default function SignIn() {
 
     return (
         <section className='container'>
-            <div className='form-container'>
-                <h2 className='title'>Login</h2>
 
-                <form className='form'>
+            <div className='login-form'>
+                <h1>Acessar App</h1>
+
+                <div className='loginInputEmail'>
+                    <span><MdEmail/></span>
                     <input
                         type='email'
-                        placeholder='Seu email'
+                        placeholder='Digite seu email'
                         value={email}
                         onChange={(value) => setEmail(value.target.value)}
                     />
+                </div>
 
+                <div className='loginInputPassword'>
+                    <span><MdLock/></span>
                     <input
                         type='password'
-                        placeholder='Senha'
+                        placeholder='Digite sua senha'
                         value={password}
                         onChange={(value) => setPassword(value.target.value)}
                     />
+                </div>
 
-                    <button onClick={handleLogin}>Entrar</button>
-                </form>
+                <button onClick={handleLogin}>
+                    {loadingAuth ? `Carregando...` : 'Entrar'}
+                </button>
+
+                <Link to="/register">Não tem conta? Cadastrar nova conta</Link>
             </div>
-
-            <div className='separator'></div>
-            <Link to="/register">Cadastrar nova conta</Link>
         </section>
     );
 }

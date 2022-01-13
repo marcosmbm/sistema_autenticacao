@@ -1,13 +1,15 @@
 import React,{useState,useContext} from 'react';
 
 import '../SignIn/styles.css';
+import {MdEmail, MdLock, MdPerson} from 'react-icons/md';
 import {Link} from 'react-router-dom';
 
 import { AuthContext } from '../../context/auth';
+import { toast } from 'react-toastify';
 
 
 export default function SignUp() {
-  const {signUp} = useContext(AuthContext);
+  const {signUp,loadingAuth} = useContext(AuthContext);
 
   ///Variaveis para cadastro
   const [nameRegister, setNameRegister] = useState('');
@@ -19,17 +21,17 @@ export default function SignUp() {
     event.preventDefault();
     
     if (nameRegister.trim() === '' || emailRegister.trim() === '' || passwordRegister.trim() === '' || passwordConfirm.trim() === '') {
-      alert('Por favor, preencha todos os campos');
+      toast.info('Por favor, preencha todos os campos');
       return;
     }
 
     if (passwordRegister !== passwordConfirm) {
-      alert('Por favor, digite as senhas iguais !!');
+      toast.info('Por favor, digite as senhas iguais !!');
       return;
     }
 
     if (passwordRegister.length < 8 || passwordConfirm.length < 8) {
-      alert('Por favor, coloque uma senha maior que pelo menos 8 caracteres');
+      toast.info('Por favor, coloque uma senha maior que pelo menos 8 caracteres');
       return;
     }
 
@@ -43,44 +45,56 @@ export default function SignUp() {
 
   return (
     <section className='container'>
-    <div className='form-container'>
-      <h2 className='title'>Cadastro</h2>
 
-      <form className='form'>
-        <input
-          type='text'
-          placeholder='Seu nome'
-          value={nameRegister}
-          onChange={(value) => setNameRegister(value.target.value)}
-        />
+    <div className='login-form'>
+        <h1>Cadastrar Conta</h1>
+        <div className='loginInputEmail'>
+            <span><MdPerson/></span>
+            <input
+                type='text'
+                placeholder='Digite seu nome'
+                value={nameRegister}
+                onChange={(value) => setNameRegister(value.target.value)}
+            />
+        </div>
 
-        <input
-          type='email'
-          placeholder='Seu email'
-          value={emailRegister}
-          onChange={(value) => setEmailRegister(value.target.value)}
-        />
+        <div className='loginInputEmail'>
+            <span><MdEmail/></span>
+            <input
+                type='email'
+                placeholder='Digite seu email'
+                value={emailRegister}
+                onChange={(value) => setEmailRegister(value.target.value)}
+            />
+        </div>
 
-        <input
-          type='password'
-          placeholder='Senha'
-          value={passwordRegister}
-          onChange={(value) => setPasswordRegister(value.target.value)}
-        />
+        <div className='loginInputPassword'>
+            <span><MdLock/></span>
+            <input
+                type='password'
+                placeholder='Digite sua senha'
+                value={passwordRegister}
+                onChange={(value) => setPasswordRegister(value.target.value)}
+            />
+        </div>
 
-        <input
-          type='password'
-          placeholder='Confirmar senha'
-          value={passwordConfirm}
-          onChange={(value) => setPasswordConfirm(value.target.value)}
-        />
-        <button onClick={handleRegister}>Cadastrar</button>
-      </form>
+        <div className='loginInputPassword'>
+            <span><MdLock/></span>
+            <input
+                type='password'
+                placeholder='Confirme sua senha'
+                value={passwordConfirm}
+                onChange={(value) => setPasswordConfirm(value.target.value)}
+            />
+        </div>
+
+        <button onClick={handleRegister}>
+          {loadingAuth ? 'Carregando...' : 'Cadastrar'}
+        </button>
+
+        
+        <Link to="/">Já tem conta? Entrar na sua conta</Link>
     </div>
-
-    <div className='separator'></div>
-
-    <Link to="/">Já tem conta cadastrada?</Link>
-    </section>
+</section>
   );
 }
