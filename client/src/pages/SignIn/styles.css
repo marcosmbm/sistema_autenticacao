@@ -118,14 +118,20 @@ a{
     text-decoration: none;
 }
 
-@media screen and (max-width: 1200px) {
+@media screen and (max-width: 1500px) {
     .login-form{
         width: 50%;
     }
 }
 
-@media screen and (max-width: 780px) {
+@media screen and (max-width: 810px) {
     .login-form{
         width: 90%;
+    }
+}
+
+@media screen and (max-width: 450px) {
+    .login-form{
+        width: 100%;
     }
 }
